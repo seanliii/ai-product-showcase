@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 产品应用案例库 — 真实企业落地效果与 ROI</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #0f172a;
+    color: #e2e8f0;
+    min-height: 100vh;
+  }
+  .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+  header { text-align: center; margin-bottom: 32px; }
+  header h1 { font-size: 2.2rem; font-weight: 700; color: #f8fafc; margin-bottom: 8px; }
+  header .subtitle { color: #94a3b8; font-size: 1.1rem; margin-bottom: 16px; }
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+  .stat-card {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, #38bdf8, #8b5cf6, #ec4899);
+  }
+  .stat-card .value { font-size: 1.8rem; font-weight: 700; color: #38bdf8; }
+  .stat-card .label { font-size: 0.85rem; color: #94a3b8; margin-top: 4px; }
+  .controls { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
+  .search-input {
+    flex: 1; min-width: 200px;
+    padding: 10px 16px; border-radius: 8px;
+    border: 1px solid #334155; background: #1e293b; color: #e2e8f0;
+    font-size: 0.95rem;
+  }
+  .search-input::placeholder { color: #64748b; }
+  .filter-group { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+  .filter-btn {
+    padding: 7px 14px; border-radius: 8px;
+    border: 1px solid #334155; background: #1e293b; color: #94a3b8;
+    cursor: pointer; font-size: 0.8rem; transition: all 0.2s; white-space: nowrap;
+  }
+  .filter-btn:hover { border-color: #38bdf8; color: #38bdf8; }
+  .filter-btn.active { background: #38bdf8; color: #0f172a; border-color: #38bdf8; font-weight: 600; }
+  .view-toggle { display: flex; gap: 6px; margin-left: auto; }
+  .view-btn {
+    padding: 7px 14px; border-radius: 8px;
+    border: 1px solid #334155; background: #1e293b; color: #94a3b8;
+    cursor: pointer; font-size: 0.8rem;
+  }
+  .view-btn.active { background: #38bdf8; color: #0f172a; border-color: #38bdf8; }
+  .filter-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 20px; }
+  .filter-label { color: #64748b; font-size: 0.8rem; align-self: center; margin-right: 4px; }
+  .content-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; }
+  .card {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 12px;
+    padding: 20px;
+    cursor: pointer;
+    transition: transform 0.2s, border-color 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .card:hover { transform: translateY(-2px); border-color: #38bdf8; }
+  .card::after {
+    content: '';
+    position: absolute; top: 0; right: 0;
+    width: 80px; height: 80px;
+    background: radial-gradient(circle, rgba(56,189,248,0.08) 0%, transparent 70%);
+  }
+  .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+  .card-title { font-size: 1.1rem; font-weight: 600; color: #f8fafc; }
+  .card-badge {
+    padding: 3px 10px; border-radius: 6px; font-size: 0.72rem; font-weight: 500;
+  }
+  .card-meta { color: #64748b; font-size: 0.85rem; margin-bottom: 10px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .card-effect {
+    background: #0f172a;
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-bottom: 12px;
+    font-size: 0.9rem;
+    color: #e2e8f0;
+    border-left: 3px solid #38bdf8;
+  }
+  .card-effect .effect-label { color: #64748b; font-size: 0.75rem; margin-bottom: 4px; }
+  .card-effect .effect-value { color: #38bdf8; font-weight: 600; }
+  .card-tags { display: flex; gap: 5px; flex-wrap: wrap; }
+  .card-tag {
+    padding: 3px 8px; border-radius: 5px; background: #0f172a;
+    color: #64748b; font-size: 0.72rem; border: 1px solid #334155;
+  }
+  .card-tag.highlight { color: #8b5cf6; border-color: #8b5cf6; }
+  .table-view { display: none; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { padding: 12px; text-align: left; border-bottom: 1px solid #334155; }
+  th { color: #94a3b8; font-weight: 500; font-size: 0.8rem; text-transform: uppercase; }
+  td { color: #e2e8f0; font-size: 0.88rem; }
+  tr:hover td { background: #1e293b; }
+  tr { cursor: pointer; }
+  .modal-overlay {
+    display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.85); z-index: 100;
+    justify-content: center; align-items: center; padding: 24px;
+  }
+  .modal-overlay.active { display: flex; }
+  .modal {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 16px;
+    max-width: 640px; width: 100%;
+    max-height: 85vh; overflow-y: auto;
+    position: relative;
+  }
+  .modal-header {
+    padding: 20px 24px; border-bottom: 1px solid #334155;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .modal-title { font-size: 1.3rem; font-weight: 600; color: #f8fafc; }
+  .modal-close { background: none; border: none; color: #94a3b8; font-size: 1.5rem; cursor: pointer; }
+  .modal-body { padding: 24px; }
+  .modal-section { margin-bottom: 20px; }
+  .modal-section-title { color: #38bdf8; font-weight: 600; font-size: 0.9rem; margin-bottom: 8px; text-transform: uppercase; }
+  .modal-section-content { color: #e2e8f0; line-height: 1.6; }
+  .modal-tag {
+    display: inline-block; padding: 4px 10px; border-radius: 6px;
+    background: #0f172a; color: #94a3b8; font-size: 0.8rem;
+    border: 1px solid #334155; margin: 2px;
+  }
+  .empty-state { text-align: center; padding: 60px 20px; color: #64748b; }
+  .footer { text-align: center; margin-top: 48px; padding: 24px; color: #475569; font-size: 0.85rem; border-top: 1px solid #1e293b; }
+  @media (max-width: 768px) {
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .content-grid { grid-template-columns: 1fr; }
+    .controls { flex-direction: column; align-items: stretch; }
+    .view-toggle { margin-left: 0; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>AI 产品应用案例库</h1>
+    <p class="subtitle">真实企业落地效果与 ROI 数据 — 15 个行业标杆案例</p>
+  </header>
+
+  <div class="stats" id="stats"></div>
+
+  <div class="controls">
+    <input type="text" class="search-input" id="searchInput" placeholder="搜索企业、场景、产品...">
+    <div class="view-toggle">
+      <button class="view-btn active" data-view="grid">卡片</button>
+      <button class="view-btn" data-view="table">表格</button>
+    </div>
+  </div>
+
+  <div class="filter-row">
+    <span class="filter-label">行业:</span>
+    <div class="filter-group" id="industryFilter"></div>
+  </div>
+  <div class="filter-row">
+    <span class="filter-label">效果:</span>
+    <div class="filter-group" id="effectFilter"></div>
+  </div>
+
+  <div class="content-grid" id="gridView"></div>
+  <div class="table-view" id="tableView"></div>
+</div>
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="modalTitle"></span>
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<div class="footer">
+  <p>AI 产品应用案例库 · 数据截至 2026-07-02 · 案例来源：公开报道与企业披露</p>
+</div>
+
+<script>
+const caseData = [
+  {
+    id: 1, company: "JPMorgan", scene: "金融合同审查",
+    industry: "金融", effects: ["时间节省", "质量提升"],
+    products: ["COiN"],
+    effectText: "合同审查 36万小时→秒级",
+    effectDetail: "每年节省 360,000 小时法务时间，合规准确率大幅提升",
+    source: "JPMorgan 年度报告 / 公开报道",
+    description: "JPMorgan 开发 COiN (Contract Intelligence) 系统，利用 NLP 技术自动解析商业贷款协议。传统法务团队每年花费约 36 万小时审查合同，COiN 将其压缩至秒级完成，同时显著提升条款识别准确率，减少人为遗漏风险。"
+  },
+  {
+    id: 2, company: "Bank of America", scene: "虚拟金融助手",
+    industry: "金融", effects: ["成本节约", "效率提升"],
+    products: ["Erica"],
+    effectText: "98% 自助解决，累计 32 亿次互动",
+    effectDetail: "用户自助解决率 98%，累计处理超 32 亿次客户互动",
+    source: "Bank of America 财报 / 公开报道",
+    description: "Erica 是 Bank of America 的 AI 虚拟助手，通过自然语言对话帮助用户查询余额、转账、还款、理财建议等。上线以来累计处理超过 32 亿次客户互动，98% 的问题无需人工客服介入即可完成解决。"
+  },
+  {
+    id: 3, company: "丽景印刷材料", scene: "智能办公 + AI 营销",
+    industry: "营销", effects: ["效率提升", "收入增长", "成本节约"],
+    products: ["AI 办公", "AI 营销"],
+    effectText: "效率 +200%，获客 +500%，人力成本降至 30%",
+    effectDetail: "业务效率提升 200%，客户获取量增长 500%，人力支出降至原来的 30%",
+    source: "企业案例报道 / 行业分析",
+    description: "丽景印刷材料通过部署 AI 智能办公系统与 AI 营销工具，实现业务流程自动化。从客户线索挖掘到订单跟进，AI 系统替代了 70% 的人工操作环节，获客成本大幅降低，业务量呈倍数增长。"
+  },
+  {
+    id: 4, company: "金蝶", scene: "财务智能体",
+    industry: "运营", effects: ["时间节省", "效率提升"],
+    products: ["AI 星瀚"],
+    effectText: "月结 12 天→4 天",
+    effectDetail: "财务月结周期从 12 天缩短至 4 天，效率提升 3 倍",
+    source: "金蝶官方案例 / 行业报道",
+    description: "金蝶 AI 星瀚财务智能体嵌入企业 ERP 系统，自动完成凭证生成、账务核对、报表编制等重复性财务工作。原本需要 12 天完成的月度结账流程，压缩至 4 天内完成，财务人员得以聚焦更高价值的分析决策。"
+  },
+  {
+    id: 5, company: "京东物流", scene: "智能库存 + 路径优化",
+    industry: "供应链", effects: ["效率提升", "时间节省"],
+    products: ["AI 预测", "路径优化"],
+    effectText: "配送 24h→11h，周转天数 -18 天",
+    effectDetail: "平均配送时效从 24 小时缩短至 11 小时，库存周转天数减少 18 天",
+    source: "京东物流技术白皮书 / 公开报道",
+    description: "京东物流运用 AI 需求预测模型与动态路径规划算法，精准预测各区域订单量，智能调配仓储资源与配送路线。配送时效缩短超过 50%，库存周转效率大幅提升，运营成本显著降低。"
+  },
+  {
+    id: 6, company: "沃尔玛", scene: "AI 预测库存",
+    industry: "供应链", effects: ["成本节约", "质量提升"],
+    products: ["AI 需求预测"],
+    effectText: "缺货率 -15%，物流成本 -8%",
+    effectDetail: "门店缺货率降低 15%，整体物流运营成本下降 8%",
+    source: "沃尔玛技术博客 / 零售行业报道",
+    description: "沃尔玛部署 AI 驱动的需求预测系统，整合历史销售、天气、节假日、区域事件等多维数据，精准预测各 SKU 在各门店的需求量。系统上线后缺货率大幅下降，补货成本显著节约，顾客满意度提升。"
+  },
+  {
+    id: 7, company: "某能源集团", scene: "供应商智能管理",
+    industry: "供应链", effects: ["成本节约", "效率提升"],
+    products: ["AI 供应商管理"],
+    effectText: "管理成本 -35%",
+    effectDetail: "供应商全生命周期管理成本降低 35%",
+    source: "行业案例集 / 企业数字化报告",
+    description: "大型能源集团引入 AI 供应商管理系统，自动完成供应商资质审查、绩效评估、风险预警、合同履约跟踪等全流程管理。AI 替代了大量人工审核工作，管理成本显著下降，供应商风险识别能力大幅提升。"
+  },
+  {
+    id: 8, company: "Qure.ai", scene: "肺结核影像筛查",
+    industry: "医疗", effects: ["时间节省", "质量提升"],
+    products: ["AI 影像诊断"],
+    effectText: "1000 万张胸片，92% 准确率，10 倍快",
+    effectDetail: "累计筛查 1000 万张胸片，准确率达 92%，速度比人工阅片快 10 倍",
+    source: "Qure.ai 官方 / 医学 AI 期刊",
+    description: "Qure.ai 的 AI 影像系统部署于全球多家医疗机构，用于肺结核等胸部疾病的快速筛查。系统可在数秒内完成胸片分析，辅助医生识别异常病灶，累计已处理超过 1000 万张影像，准确率达到 92%。"
+  },
+  {
+    id: 9, company: "Ada Health", scene: "AI 分诊工具",
+    industry: "医疗", effects: ["时间节省", "效率提升"],
+    products: ["AI 分诊"],
+    effectText: "急诊等待时间 -73%",
+    effectDetail: "患者急诊平均等待时间减少 73%，分诊效率大幅提升",
+    source: "Ada Health 案例 / 医疗科技报道",
+    description: "Ada Health 的 AI 分诊系统通过对话式问诊收集患者症状，结合医学知识库进行智能评估，推荐就诊优先级。在多家合作医院部署后，患者平均等待时间大幅下降，医疗资源分配更加合理。"
+  },
+  {
+    id: 10, company: "某制造企业", scene: "AI 生产调度",
+    industry: "制造", effects: ["效率提升", "成本节约"],
+    products: ["AI 调度", "ABB YuMi"],
+    effectText: "故障率 -30%，ABB YuMi 效率 +40%",
+    effectDetail: "生产设备故障率降低 30%，协作机器人 ABB YuMi 工作效率提升 40%",
+    source: "制造业数字化转型报告 / 行业案例",
+    description: "制造企业引入 AI 智能调度系统与 ABB YuMi 协作机器人，实现生产线动态排程、设备预测性维护、人机协同作业。AI 实时监测设备运行状态，提前预警故障，机器人承担重复性装配任务，整体生产效率大幅提升。"
+  },
+  {
+    id: 11, company: "DHL", scene: "AI 路径规划",
+    industry: "供应链", effects: ["成本节约", "效率提升"],
+    products: ["AI 路径优化"],
+    effectText: "欧洲运输成本 -12%",
+    effectDetail: "欧洲区域内运输成本降低 12%，配送效率提升",
+    source: "DHL 技术报告 / 物流行业报道",
+    description: "DHL 在欧洲物流网络中部署 AI 路径规划系统，实时整合交通路况、天气、订单密度、车辆容量等数据，动态优化配送路线与装载方案。系统上线后运输成本显著下降，碳排放量同步减少。"
+  },
+  {
+    id: 12, company: "Zest AI", scene: "AI 信贷决策",
+    industry: "金融", effects: ["质量提升", "成本节约"],
+    products: ["AI 信贷评估"],
+    effectText: "信用白户违约率 -25%",
+    effectDetail: "信用白户（无历史信用记录人群）违约率降低 25%",
+    source: "Zest AI 官方 / 金融科技报道",
+    description: "Zest AI 的机器学习信贷评估模型替代传统 FICO 评分体系，通过分析更多维度的数据（包括消费行为、支付习惯等），更精准地评估信用白户的违约风险。模型上线后信用白户违约率下降 25%，同时扩大了信贷覆盖面。"
+  },
+  {
+    id: 13, company: "DataRobot", scene: "AI 反欺诈",
+    industry: "金融", effects: ["质量提升", "效率提升"],
+    products: ["AI 反欺诈"],
+    effectText: "盗刷识别率 +60%",
+    effectDetail: "信用卡盗刷交易识别率提升 60%",
+    source: "DataRobot 案例 / 金融安全报道",
+    description: "DataRobot 为金融机构构建 AI 反欺诈模型，通过实时分析交易行为模式、设备指纹、地理位置等多维特征，毫秒级识别可疑交易。模型上线后盗刷识别率大幅提升，误报率同步下降，为银行和客户挽回大量损失。"
+  },
+  {
+    id: 14, company: "巨人网络", scene: "AI 游戏生产力",
+    industry: "内容", effects: ["效率提升", "成本节约"],
+    products: ["AI 美术", "AI 策划"],
+    effectText: "降本增效",
+    effectDetail: "AI 辅助美术、策划、测试环节，显著降低开发成本并提升产出效率",
+    source: "巨人网络财报 / 游戏行业报道",
+    description: "巨人网络将 AI 技术全面融入游戏研发管线，包括 AI 生成美术素材、AI 辅助剧情策划、AI 自动化测试等。AI 工具显著缩短了内容生产周期，降低了外包成本，使团队能更快迭代推出新内容。"
+  },
+  {
+    id: 15, company: "某运营商", scene: "人机协同客服",
+    industry: "客服", effects: ["效率提升", "质量提升"],
+    products: ["AI 客服"],
+    effectText: "问题解决率 65%→90%",
+    effectDetail: "客户问题一次解决率从 65% 提升至 90%",
+    source: "运营商数字化转型案例 / 行业报告",
+    description: "运营商部署 AI 人机协同客服系统，AI 处理 80% 以上常见问题，复杂问题智能转人工并附带上下文摘要。系统上线后客户问题一次解决率从 65% 跃升至 90%，平均通话时长缩短，客户满意度同步提升。"
+  }
+];
+
+const industryColors = {
+  "金融": "#7c3aed", "营销": "#ec4899", "运营": "#0ea5e9", "供应链": "#10b981",
+  "医疗": "#f59e0b", "制造": "#8b5cf6", "内容": "#06b6d4", "客服": "#e11d48"
+};
+const effectColors = {
+  "效率提升": "#38bdf8", "成本节约": "#10b981", "收入增长": "#f59e0b",
+  "时间节省": "#8b5cf6", "质量提升": "#ec4899"
+};
+
+let currentView = 'grid';
+let searchQuery = '';
+let activeIndustry = '全部';
+let activeEffect = '全部';
+
+const industries = ['全部', ...new Set(caseData.map(d => d.industry))];
+const effects = ['全部', ...new Set(caseData.flatMap(d => d.effects))];
+
+function renderStats() {
+  const total = caseData.length;
+  const industryCount = new Set(caseData.map(d => d.industry)).size;
+  const efficiencyCount = caseData.filter(d => d.effects.includes('效率提升')).length;
+  const costCount = caseData.filter(d => d.effects.includes('成本节约')).length;
+  const avgEffect = '显著';
+  const stats = [
+    { label: '案例总数', value: total },
+    { label: '行业覆盖', value: industryCount + ' 个' },
+    { label: '效率提升', value: efficiencyCount },
+    { label: '成本节约', value: costCount },
+    { label: '平均效果', value: avgEffect }
+  ];
+  document.getElementById('stats').innerHTML = stats.map(s =>
+    `<div class="stat-card"><div class="value">${s.value}</div><div class="label">${s.label}</div></div>`
+  ).join('');
+}
+
+function renderIndustryFilters() {
+  const el = document.getElementById('industryFilter');
+  el.innerHTML = industries.map(i =>
+    `<button class="filter-btn ${i === activeIndustry ? 'active' : ''}" data-industry="${i}">${i}</button>`
+  ).join('');
+  el.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeIndustry = btn.dataset.industry;
+      renderIndustryFilters();
+      renderEffectFilters();
+      renderAll();
+    });
+  });
+}
+
+function renderEffectFilters() {
+  const el = document.getElementById('effectFilter');
+  el.innerHTML = effects.map(e =>
+    `<button class="filter-btn ${e === activeEffect ? 'active' : ''}" data-effect="${e}">${e}</button>`
+  ).join('');
+  el.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeEffect = btn.dataset.effect;
+      renderIndustryFilters();
+      renderEffectFilters();
+      renderAll();
+    });
+  });
+}
+
+function getFilteredData() {
+  let data = caseData;
+  if (activeIndustry !== '全部') data = data.filter(d => d.industry === activeIndustry);
+  if (activeEffect !== '全部') data = data.filter(d => d.effects.includes(activeEffect));
+  if (searchQuery) {
+    const q = searchQuery.toLowerCase();
+    data = data.filter(d =>
+      d.company.toLowerCase().includes(q) ||
+      d.scene.toLowerCase().includes(q) ||
+      d.industry.toLowerCase().includes(q) ||
+      d.products.some(p => p.toLowerCase().includes(q)) ||
+      d.effects.some(e => e.toLowerCase().includes(q)) ||
+      d.effectText.toLowerCase().includes(q)
+    );
+  }
+  return data;
+}
+
+function renderCard(item) {
+  const color = industryColors[item.industry] || '#38bdf8';
+  return `
+    <div class="card" onclick="openModal(${item.id})">
+      <div class="card-header">
+        <div class="card-title">${item.company}</div>
+        <div class="card-badge" style="background:${color}22;color:${color};border:1px solid ${color}44;">${item.industry}</div>
+      </div>
+      <div class="card-meta">${item.scene} · ${item.products.join(' + ')}</div>
+      <div class="card-effect">
+        <div class="effect-label">效果指标</div>
+        <div class="effect-value">${item.effectText}</div>
+      </div>
+      <div class="card-tags">
+        ${item.effects.map(e => `<span class="card-tag" style="color:${effectColors[e] || '#64748b'};border-color:${effectColors[e] || '#334155'};">${e}</span>`).join('')}
+        ${item.products.map(p => `<span class="card-tag">${p}</span>`).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function renderGrid() {
+  const data = getFilteredData();
+  const grid = document.getElementById('gridView');
+  if (data.length === 0) {
+    grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1;">未找到匹配的案例</div>';
+  } else {
+    grid.innerHTML = data.map(item => renderCard(item)).join('');
+  }
+  grid.style.display = 'grid';
+  document.getElementById('tableView').style.display = 'none';
+}
+
+function renderTable() {
+  const data = getFilteredData();
+  const table = document.getElementById('tableView');
+  if (data.length === 0) {
+    table.innerHTML = '<div class="empty-state">未找到匹配的案例</div>';
+  } else {
+    table.innerHTML = `
+      <table>
+        <thead><tr>
+          <th>企业</th><th>场景</th><th>行业</th><th>效果指标</th><th>AI 产品</th><th>效果类型</th>
+        </tr></thead>
+        <tbody>
+          ${data.map(d => `
+            <tr onclick="openModal(${d.id})">
+              <td><strong>${d.company}</strong></td>
+              <td>${d.scene}</td>
+              <td><span style="color:${industryColors[d.industry]||'#e2e8f0'};">${d.industry}</span></td>
+              <td>${d.effectText}</td>
+              <td>${d.products.join(', ')}</td>
+              <td>${d.effects.join(', ')}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    `;
+  }
+  document.getElementById('gridView').style.display = 'none';
+  table.style.display = 'block';
+}
+
+function renderAll() {
+  if (currentView === 'grid') renderGrid(); else renderTable();
+}
+
+function openModal(id) {
+  const item = caseData.find(d => d.id === id);
+  if (!item) return;
+  const color = industryColors[item.industry] || '#38bdf8';
+  document.getElementById('modalTitle').textContent = item.company;
+  document.getElementById('modalBody').innerHTML = `
+    <div class="modal-section">
+      <div class="modal-section-title">场景</div>
+      <div class="modal-section-content">${item.scene}</div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title">行业</div>
+      <div class="modal-section-content"><span class="modal-tag" style="color:${color};border-color:${color};">${item.industry}</span></div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title">核心效果</div>
+      <div class="modal-section-content" style="font-weight:600;color:#38bdf8;">${item.effectText}</div>
+      <div class="modal-section-content" style="margin-top:4px;">${item.effectDetail}</div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title">使用的 AI 产品</div>
+      <div class="modal-section-content">${item.products.map(p => `<span class="modal-tag">${p}</span>`).join('')}</div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title">效果标签</div>
+      <div class="modal-section-content">${item.effects.map(e => `<span class="modal-tag" style="color:${effectColors[e]||'#94a3b8'};border-color:${effectColors[e]||'#334155'};">${e}</span>`).join('')}</div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title">案例描述</div>
+      <div class="modal-section-content">${item.description}</div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title">来源</div>
+      <div class="modal-section-content" style="color:#64748b;font-size:0.85rem;">${item.source}</div>
+    </div>
+  `;
+  document.getElementById('modalOverlay').classList.add('active');
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('active');
+}
+
+document.getElementById('modalOverlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+});
+
+document.getElementById('searchInput').addEventListener('input', e => {
+  searchQuery = e.target.value;
+  renderAll();
+});
+
+document.querySelectorAll('.view-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentView = btn.dataset.view;
+    renderAll();
+  });
+});
+
+renderStats();
+renderIndustryFilters();
+renderEffectFilters();
+renderAll();
+</script>
+</body>
+</html>
