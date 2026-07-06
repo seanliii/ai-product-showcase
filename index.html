@@ -533,6 +533,10 @@ document.getElementById('modalOverlay').addEventListener('click', e => {
 
 document.getElementById('searchInput').addEventListener('input', e => {
   searchQuery = e.target.value;
+  activeIndustry = '全部';
+  activeEffect = '全部';
+  renderIndustryFilters();
+  renderEffectFilters();
   renderAll();
 });
 
